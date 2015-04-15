@@ -1,20 +1,23 @@
 # we download archlinux fs from web
-wget http://archlinux.mirrors.ovh.net/archlinux/iso/2013.08.01/arch/x86_64/root-image.fs.sfs
-unsquashfs -d /squashfs-root root-image.fs.sfs
+cd /tmp
+curl -O https://mirrors.kernel.org/archlinux/iso/2015.03.01/archlinux-bootstrap-2015.03.01-x86_64.tar.gz
+tar zxf archlinux-bootstrap-2015.03.01-x86_64.tar.gz .
 
-# we create temp arch system
-mkdir /arch
-mount -o loop /squashfs-root/root-image.fs /arch
-mount -t proc none /arch/proc
-mount -t sysfs none /arch/sys
-mount -o bind /dev /arch/dev
-mount -o bind /dev/pts /arch/dev/pts
-cp -L /etc/resolv.conf /arch/etc
-mkdir /arch/run/shm
+## edit mirrorlist
+nano /tmp/root.x86_64/etc/pacman.d/mirrorlist
 
 # we install the script that will be used
-wget http://dl.leneveu.fr/public/autoinstall.sh
-mv autoinstall.sh /arch
+wget https://raw.githubusercontent.com/nickmeessen/archlinux-autodedibox/master/autoinstall.sh
+mv autoinstall.sh /tmp/root.x86_64/tmp/
 
 # we chroot into temp arch environment
-chroot /arch bash
+cd /tmp/root.x86_64
+cp /etc/resolv.conf etc
+mount -t proc /proc proc
+mount --rbind /sys sys
+mount --rbind /dev dev
+mount --rbind /run run
+# (assuming /run exists on the system)
+chroot /tmp/root.x86_64 /bin/bash
+
+sh /tmp/root.x86_64/tmp/autoinstall.sh
