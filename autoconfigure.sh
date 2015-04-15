@@ -1,13 +1,13 @@
 # hostname
-echo "jc-server" >> /etc/hostname
+echo "dedibox" >> /etc/hostname
 
 # locale
-echo "fr_FR.UTF-8 UTF-8" >> /etc/locale.gen
-echo "LANG=\"fr_FR.UTF-8\"" >> /etc/locale.conf
-export LANG=fr_FR.UTF-8
-echo "KEYMAP=fr-pc" >> /etc/vconsole.conf
+echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen
+echo "LANG=\"en_US.UTF-8\"" >> /etc/locale.conf
+export LANG=en_US.UTF-8
+echo "KEYMAP=en-pc" >> /etc/vconsole.conf
 locale-gen
-ln -s /usr/share/zoneinfo/Europe/Paris /etc/localtime
+ln -s /usr/share/zoneinfo/Europe/Amsterdam /etc/localtime
 
 # mkinitcpio
 mkinitcpio -p linux
@@ -20,9 +20,13 @@ syslinux-install_update -iam
 passwd
 
 # main user passwd
-useradd -g users -m -s /bin/zsh jc
-passwd jc
+useradd -g users -m -s /bin/zsh mainuser
+passwd mainuser
 
 # openssh & network
 systemctl enable sshd.service
 systemctl enable dhcpcd.service
+
+# exit & reboot
+exit
+reboot
